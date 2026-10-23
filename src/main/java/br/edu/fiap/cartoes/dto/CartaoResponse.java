@@ -1,9 +1,10 @@
 package br.edu.fiap.cartoes.dto;
-import java.time.Instant;
-import br.edu.fiap.cartoes.entity.StatusSolicitacao;
+
 import br.edu.fiap.cartoes.entity.StatusCartao;
-import jakarta.validation.constraints.*;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
+
+import java.time.Instant;
+
 /** Camada DTO: contrato HTTP pronto; não é entidade nem modelo de tabela. Cartão didático sem número real, CVV ou dados financeiros. */
 @Schema(description = "Cartão didático sem número real, CVV ou dados financeiros.")
 public record CartaoResponse(

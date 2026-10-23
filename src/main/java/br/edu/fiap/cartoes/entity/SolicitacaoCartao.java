@@ -1,8 +1,9 @@
 package br.edu.fiap.cartoes.entity;
 
+import br.edu.fiap.cartoes.exception.RegraNegocioException;
 import jakarta.persistence.*;
+
 import java.time.Instant;
-import br.edu.fiap.cartoes.exception.EtapaNaoImplementadaException;
 
 /**
  * Camada entity: representa o estado persistido de SolicitacaoCartao e seus comportamentos simples.
@@ -16,6 +17,7 @@ public class SolicitacaoCartao {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "usuario_id", nullable = false)
     private Usuario usuario;
@@ -44,25 +46,24 @@ public class SolicitacaoCartao {
 
     /** Permitir somente PENDENTE para CANCELADA; outros estados geram conflito. */
     public void cancelar() {
-        // TODO: implementar o comportamento descrito no desafio.
-        throw new EtapaNaoImplementadaException("SolicitacaoCartao.cancelar");
+        if( this.status != StatusSolicitacao.PENDENTE ) {
+            throw new RegraNegocioException( "Apenas solictações pendentes podem ser canceladas." );
+        }
+        this.status = StatusSolicitacao.CANCELADA;
     }
 
     /** Permitir somente PENDENTE para EMITIDA; executar na mesma transação da criação do cartão. */
     public void marcarEmitida() {
-        // TODO: implementar o comportamento descrito no desafio.
-        throw new EtapaNaoImplementadaException("SolicitacaoCartao.marcarEmitida");
+        if( this.status != StatusSolicitacao.PENDENTE ) {
+            throw new RegraNegocioException( "Apenas solictações pendentes podem ser emitidas." );
+        }
+        this.status = StatusSolicitacao.EMITIDA;
     }
 
     // Getters e setters prontos; não usar setters de status para contornar as regras.
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
     public Usuario getUsuario() { return usuario; }
-    public void setUsuario(Usuario usuario) { this.usuario = usuario; }
     public TipoCartao getTipoCartao() { return tipoCartao; }
-    public void setTipoCartao(TipoCartao tipoCartao) { this.tipoCartao = tipoCartao; }
     public Instant getSolicitadaEm() { return solicitadaEm; }
-    public void setSolicitadaEm(Instant solicitadaEm) { this.solicitadaEm = solicitadaEm; }
     public StatusSolicitacao getStatus() { return status; }
-    public void setStatus(StatusSolicitacao status) { this.status = status; }
 }
