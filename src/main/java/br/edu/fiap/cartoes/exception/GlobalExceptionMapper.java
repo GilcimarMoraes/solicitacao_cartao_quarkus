@@ -18,10 +18,10 @@ public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
     @Context UriInfo uri;
     @Override public Response toResponse(Exception erro) {
         int status=500; String codigo="ERRO_INTERNO"; String mensagem="Não foi possível concluir a operação";
-        if (erro instanceof EtapaNaoImplementadaException) {
+        if( erro instanceof InfraestruturaException ) {
+            status = 500; codigo = "ERRO_INTERNO"; mensagem = "Não foi possível concluir a operação";
+        } else if (erro instanceof EtapaNaoImplementadaException) {
             status=501;codigo="TODO";mensagem=erro.getMessage();
-        } else if( erro instanceof InfraestruturaException ) {
-            status=500; codigo="ERRO_INTERNO"; mensagem="Não foi possível concluir a operação";
         } else if (erro instanceof RecursoNaoEncontradoException) {
             status=404;codigo="NAO_ENCONTRADO";mensagem=erro.getMessage();
         } else if (erro instanceof CredenciaisInvalidasException) {

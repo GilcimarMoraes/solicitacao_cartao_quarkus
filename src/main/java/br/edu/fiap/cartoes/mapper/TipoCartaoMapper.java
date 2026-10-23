@@ -8,6 +8,7 @@ public final class TipoCartaoMapper {
     private TipoCartaoMapper() {}
 
     public static TipoCartaoResponse paraResponse(TipoCartao tipoCartao) {
+        if(tipoCartao == null) return null;
 
         return new TipoCartaoResponse(
                 tipoCartao.getId(),

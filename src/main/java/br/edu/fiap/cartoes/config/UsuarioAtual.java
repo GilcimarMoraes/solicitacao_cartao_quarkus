@@ -13,10 +13,10 @@ public class UsuarioAtual {
     @Inject JsonWebToken jwt;
     public Long id() {
         Object valor = jwt.getClaim("usuarioId");
-        try {
-            long id = Long.parseLong(String.valueOf(valor));
-            if (id > 0) return id;
-        } catch (NumberFormatException ignored) { }
-        throw new NotAuthorizedException("Bearer");
+        if( valor instanceof Number n) {
+            long id = n.longValue();
+            if( id > 0 ) return id;
+        }
+        throw new NotAuthorizedException( "Bearer" );
     }
 }

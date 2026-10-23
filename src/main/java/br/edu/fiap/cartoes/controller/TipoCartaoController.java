@@ -31,8 +31,15 @@ import br.edu.fiap.cartoes.config.UsuarioAtual;
 @Authenticated
 @SecurityRequirement(name="bearerAuth")
 public class TipoCartaoController {
-    @Inject TipoCartaoUseCase tipos;
+
+    private final TipoCartaoUseCase tipoCartaoUseCase;
+
     @Inject UsuarioAtual usuarioAtual;
+
+    @Inject
+    public TipoCartaoController(TipoCartaoUseCase tipoCartaoUseCase) {
+        this.tipoCartaoUseCase = tipoCartaoUseCase;
+    }
 
     /** Protegida. Única rota JDBC do desafio. PreparedStatement deve filtrar disponivel=true e ordenar por nome; retornar lista vazia quando não houver oferta. */
     @GET
@@ -42,7 +49,9 @@ public class TipoCartaoController {
         @APIResponse(responseCode="401",description="Credenciais ou token ausentes ou inválidos"),
         @APIResponse(responseCode="501",description="Casca ainda não implementada",content=@Content(schema=@Schema(implementation=ErroResponse.class)))
     })
-    public List<TipoCartaoResponse> listar() {
-        return tipos.listarDisponiveis();
+    public Response listar() {
+        List<TipoCartaoResponse> lista = tipoCartaoUseCase.listarDisponiveis();
+
+        return Response.ok( lista ).build();
     }
 }
