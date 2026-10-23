@@ -1,10 +1,17 @@
 package br.edu.fiap.cartoes.exception;
+
 import br.edu.fiap.cartoes.dto.ErroResponse;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.ws.rs.WebApplicationException;
-import jakarta.ws.rs.core.*;
-import jakarta.ws.rs.ext.*;
+import jakarta.ws.rs.core.Context;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.core.UriInfo;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
+
 import java.time.Instant;
+
 /** Borda HTTP pronta: traduz falhas sem enviar entidades ou detalhes internos ao cliente. */
 @Provider
 public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
@@ -15,10 +22,10 @@ public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
             status=501;codigo="TODO";mensagem=erro.getMessage();
         } else if (erro instanceof RecursoNaoEncontradoException) {
             status=404;codigo="NAO_ENCONTRADO";mensagem=erro.getMessage();
+        } else if (erro instanceof CredenciaisInvalidasException) {
+            status = 401;codigo = "CREDENCIAIS_INVALIDAS";mensagem = erro.getMessage();
         } else if (erro instanceof RegraNegocioException) {
             status=409;codigo="REGRA_NEGOCIO";mensagem=erro.getMessage();
-        } else if (erro instanceof CredenciaisInvalidasException) {
-            status=401;codigo="CREDENCIAIS_INVALIDAS";mensagem=erro.getMessage();
         } else if (erro instanceof ConstraintViolationException) {
             status=400;codigo="ENTRADA_INVALIDA";mensagem="Confira os campos obrigatórios e seus limites";
         } else if (erro instanceof WebApplicationException web) {
@@ -30,6 +37,8 @@ public class GlobalExceptionMapper implements ExceptionMapper<Exception> {
                 case 404 -> "Recurso não encontrado";
                 default -> "Não foi possível concluir a requisição";
             };
+        } else if( erro instanceof EntradaInvalidaException ) {
+            status = 400; codigo = "ENTRADA-INVALIDA"; mensagem = erro.getMessage();
         }
         var resposta=Response.status(status).type(MediaType.APPLICATION_JSON_TYPE)
             .entity(new ErroResponse(Instant.now(),status,codigo,mensagem,uri.getPath()));

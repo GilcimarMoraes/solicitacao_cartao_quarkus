@@ -1,8 +1,9 @@
 package br.edu.fiap.cartoes.entity;
 
+import br.edu.fiap.cartoes.exception.EntradaInvalidaException;
 import jakarta.persistence.*;
 import java.time.Instant;
-import br.edu.fiap.cartoes.exception.EtapaNaoImplementadaException;
+import java.util.Locale;
 
 /**
  * Camada entity: representa o estado persistido de Usuario e seus comportamentos simples.
@@ -42,25 +43,35 @@ public class Usuario {
 
     /** Validar o nome antes de alterá-lo. */
     public void alterarNome(String nome) {
-        // TODO: implementar o comportamento descrito no desafio.
-        throw new EtapaNaoImplementadaException("Usuario.alterarNome");
+        if (nome == null || nome.isBlank()) {
+            throw new EntradaInvalidaException("Nome não pode ser vazio.");
+        }
+        String normalizado = nome.trim();
+        if (normalizado.length() > 100) {
+            throw new EntradaInvalidaException("Nome não pode exceder 100 caracteres.");
+        }
+        this.nome = normalizado;
+    }
+
+    public static String normalizarEmail( String email ){
+        if(email==null || email.isBlank() ) {
+            throw new EntradaInvalidaException( "Email não pode ser vazio." );
+        }
+        return email.trim().toLowerCase(Locale.ROOT);
     }
 
     /** Aceitar somente hash produzido pelo componente BCrypt, nunca senha em texto. */
     public void atualizarSenhaHash(String senhaHash) {
-        // TODO: implementar o comportamento descrito no desafio.
-        throw new EtapaNaoImplementadaException("Usuario.atualizarSenhaHash");
+        if (senhaHash == null || senhaHash.isBlank()) {
+            throw new EntradaInvalidaException("Hash de senha não pode ser vazio.");
+        }
+        this.senhaHash = senhaHash;
     }
 
     // Getters e setters prontos; não usar setters de status para contornar as regras.
     public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
     public String getNome() { return nome; }
-    public void setNome(String nome) { this.nome = nome; }
     public String getEmail() { return email; }
-    public void setEmail(String email) { this.email = email; }
     public String getSenhaHash() { return senhaHash; }
-    public void setSenhaHash(String senhaHash) { this.senhaHash = senhaHash; }
     public Instant getCriadoEm() { return criadoEm; }
-    public void setCriadoEm(Instant criadoEm) { this.criadoEm = criadoEm; }
 }

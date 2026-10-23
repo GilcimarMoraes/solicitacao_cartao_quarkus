@@ -1,8 +1,6 @@
 package br.edu.fiap.cartoes.dto;
 import java.time.Instant;
-import br.edu.fiap.cartoes.entity.StatusSolicitacao;
-import br.edu.fiap.cartoes.entity.StatusCartao;
-import jakarta.validation.constraints.*;
+import br.edu.fiap.cartoes.entity.Usuario;
 import org.eclipse.microprofile.openapi.annotations.media.Schema;
 /** Camada DTO: contrato HTTP pronto; não é entidade nem modelo de tabela. Dados públicos do cadastro, sem senha ou hash. */
 @Schema(description = "Dados públicos do cadastro, sem senha ou hash.")
